@@ -1,8 +1,9 @@
-My groupmembers are:
+groupmembers:
 - Parisa Ashraf
 - Conner Fair
 - Julion Rowland
 - Cheyenne Silverio
+- Daevin Oey
 
 
------------------- Fill in some information about your project under this ------------------
+Medication Adherence System: A platform that reminds patients to take their medications, tracks adherence, and provides reports to healthcare providers, helping to prevent non-adherence complications.
