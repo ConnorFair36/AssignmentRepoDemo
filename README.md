@@ -1,6 +1,6 @@
 groupmembers:
 - Parisa Ashraf
-- Conner Fair
+- Connor Fair
 - Julion Rowland
 - Cheyenne Silverio
 - Daevin Oey
