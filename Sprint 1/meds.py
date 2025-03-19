@@ -3,7 +3,7 @@ import json
 class medsManager():
     def __init__(self):
         pass
-    def addMedication(self, name="", conditions="", severity=0, time1={-1, -1}, time2={-1, -1}, time3={-1, -1}):
+    def addMedication(self, name="", conditions="", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
         if(severity < 0 or severity > 5):#returns false if medicaiton information is invalid
             return False
         if(time1[0] < -1 or time1[0] > 24 or time1[1] < -1 or time1[1] > 60):

@@ -25,42 +25,8 @@
             "minutes": 0
         },
         "time2": {
-            "hours": 12,
-            "minutes": 0
-        },
-        "time3": {
             "hours": -1,
             "minutes": -1
-        }
-    },
-    {
-        "name": "adderall",
-        "conditions": "take with food",
-        "severity": 3,
-        "time1": {
-            "hours": 8,
-            "minutes": 0
-        },
-        "time2": {
-            "hours": 20,
-            "minutes": 0
-        },
-        "time3": {
-            "hours": 14,
-            "minutes": 0
-        }
-    },
-    {
-        "name": "xanax",
-        "conditions": "",
-        "severity": 3,
-        "time1": {
-            "hours": 7,
-            "minutes": 0
-        },
-        "time2": {
-            "hours": 12,
-            "minutes": 0
         },
         "time3": {
             "hours": -1,
