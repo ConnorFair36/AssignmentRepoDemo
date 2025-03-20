@@ -1,8 +1,9 @@
 import json
-            
+from reminder import reminder
+
 class medsManager():
     def __init__(self):
-        pass
+        self.reminder = reminder()
     def addMedication(self, name="", conditions="", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
         if(severity < 0 or severity > 5):#returns false if medicaiton information is invalid
             return False
@@ -32,35 +33,32 @@ class medsManager():
             }
             self.writeMedication()
             return True
-        
-        #if self.newMed.valid():
 
-    def writeMedication(self):
+    def getMedsList(self):
         medsArray = []
         try:
             with open("medsList.json", mode="r", encoding="utf-8") as f:
-                #for tempMed in self.medsList:
                 try:
                     medsArray = json.load(f)
                 except json.decoder.JSONDecodeError:
                     pass
-                    #print(tempMed)
-                medsArray.append(self.newMed)
-                #print(medsArray)
+                
         except FileNotFoundError:
             print(f"File 'medsList.json' not found! Aborting")
             exit(1)
         f.close()
-        
+        return medsArray
+
+    def writeMedication(self):
+        self.medsArray = self.getMedsList()
+        self.medsArray.append(self.newMed)
         try:
             with open("medsList.json", mode="w", encoding="utf-8") as self.medsList:
-                #print(medsArray)
-                json.dump(medsArray, self.medsList, indent = 4)
+                json.dump(self.medsArray, self.medsList, indent = 4)
         except FileNotFoundError:
             print(f"File 'medsList.json' not found! Aborting")
             exit(1)
         self.medsList.close()
-            #.dumps(self.newMed, indent = 4)
 
     def clear(self):
         try:
@@ -70,3 +68,8 @@ class medsManager():
             print(f"File 'medsList.json' not found! Aborting")
             exit(1)
         self.medsList.close()
+
+    def reminderCheck(self):
+        for medication in self.medsArray:
+            self.reminder.check(medication)
+
