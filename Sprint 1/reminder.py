@@ -1,4 +1,5 @@
 import time
+import window
 
 class reminder():
     def __init__(self):
@@ -32,7 +33,7 @@ class reminder():
             self.sendReminder(minute)
     def sendReminder(self, minute):
         if(self.reminderSent == False):
-            print("REMINDER: time to take " + self.med["name"])
+            window.popupmsg(self.med["name"])
             self.reminderSent = True
         elif(time.localtime()[4] > minute):
             self.reminderSent = False
