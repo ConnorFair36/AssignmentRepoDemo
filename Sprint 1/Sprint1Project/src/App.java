@@ -11,6 +11,9 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -29,6 +32,7 @@ public class App {
             e.printStackTrace();
             System.exit(0);
         }
+
         // determines if the user is a doctor or a paitent
         Scanner userIn = new Scanner(System.in);
         String userType;
@@ -50,9 +54,10 @@ public class App {
             }
             System.out.println("invalid input please only input yes or no");
         }
+
         int userID;
         if (isNew.equals("yes")) {
-            userID = createAccount(userType);
+            userID = createAccount(userType, userIn);
         } else {
             // lets the user login, after 3 failed attempts, the user will be kicked out of the program
             userID = loginUser(userType);
@@ -68,25 +73,40 @@ public class App {
         userIn.close();
     }
 
-    private static int createAccount(String userType) {
+    private static int createAccount(String userType, Scanner userIn) {
         if (userType.equals("paitent") || userType.equals("Paitent")) {
-            return createPaitAcc();
+            return createPaitAcc(userIn);
         }
-        return createDocAcc();
+        return createDocAcc(userIn);
     }
 
     // gets doctor information from the user and appends the data to the doctor.txt file
-    private static int createDocAcc() {
+    private static int createDocAcc(Scanner userIn) {
         int maxID = getMaxID("doctor.txt");
         int userID = maxID + 1;
         // TODO: ask for the user's name, password, phone#, email and institution name and verify their validity
         // TODO: add the user's data to the doctor.txt in the following order with | between them:
         // userID|name|password|phone#|email|institutionName
+
+        System.out.print("Enter your name as: (First Name) (Last Name): ");
+        String name = validateInput(userIn, "[A-Z][a-z]* [A-Z][a-z]*", "(First Name) (Last Name)");
+
+        System.out.print("Enter your password (cannot contain | and must be between 8 and 12 characters): ");
+        String password = validateInput(userIn, "[^|]{8, 12}", "cannot contain | and must be between 8 and 12 characters");
+
+        System.out.print("Enter your phone number as (XXX)XXX-XXXX : ");
+        String phoneNum = validateInput(userIn, "([0-9]{3})[0-9]{3}-[0-9]{4}", "(XXX)XXX-XXXX");
+
+        System.out.print("Enter your email as username@email.com");
+        String email = validateInput(userIn, "[A-z]+@[A-z]+\\.[A-z]+", "username@email.com");
+
+        System.out.print("Enter your institution name: ");
+        String instName = userIn.nextLine();
         return userID;
 
     }
 
-    private static int createPaitAcc() {
+    private static int createPaitAcc(Scanner userIn) {
         int maxID = getMaxID("paitent.txt");
         int userID = maxID + 1;
         // TODO: ask for the user's name, phone#, email, birthday, sex and insurance provider and verify their validity
@@ -144,6 +164,22 @@ public class App {
         // TODO: This if where the doctor can add and remove paitents on their list,
         // update medications for users of the list and generate a report for any paitent (this last on might not be doable yet)
         System.out.println("Doing doctor stuff!");
+    }
+
+    // takes a user input and verifies that it matches the pattern needed, if it doesn't, it prints the feedback to help 
+    // the user input the correct data Ex: for a phone number input, pattern = "[0-9]{3}\.[0-9]{3}\.[0-9]{4}", feeback: "XXX.XXX.XXXX"
+    private static String validateInput(Scanner userIn, String pattern, String feedback) {
+        Pattern compiledPattern = Pattern.compile(pattern);
+        String inputData;
+        while (true){
+            inputData = userIn.nextLine();
+            Matcher matcher = compiledPattern.matcher(inputData);
+            boolean matchFound = matcher.find();
+            if (matchFound) {
+                return inputData;
+            }
+            System.out.print("Incorrect format. please enter again with the format: " + feedback + " : ");
+        }
     }
 
 }
