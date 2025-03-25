@@ -31,9 +31,10 @@ class reminder():
             self.sendReminder(minute)
         elif(self.med["time3"]["hours"] == hour and self.med["time3"]["minutes"] == minute):
             self.sendReminder(minute)
+
     def sendReminder(self, minute):
         if(self.reminderSent == False):
-            window.popupmsg(self.med["name"])
+            window.popupmsg(self.med)
             self.reminderSent = True
         elif(time.localtime()[4] > minute):
             self.reminderSent = False
