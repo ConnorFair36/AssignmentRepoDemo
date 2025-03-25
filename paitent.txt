@@ -1,0 +1,19 @@
+class Patient{
+  private String name;
+  priavte List<Medication> meds;
+
+  public paitent(String name){
+    this.name = name;
+    this.meds = new Arraylist<>();
+  }
+
+  public void addMedication(Medication med){
+    meds.add(med);
+  }
+
+  public void confirmMedicationTaken(String medicationName){
+//fix  
+}
+
+
+}
