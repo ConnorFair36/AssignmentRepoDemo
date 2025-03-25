@@ -14,6 +14,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import helperClasses.AccountUpdater;
+
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -84,24 +86,26 @@ public class App {
     private static int createDocAcc(Scanner userIn) {
         int maxID = getMaxID("doctor.txt");
         int userID = maxID + 1;
-        // TODO: ask for the user's name, password, phone#, email and institution name and verify their validity
-        // TODO: add the user's data to the doctor.txt in the following order with | between them:
+        // adds the user's data to the doctor.txt in the following order with | between them:
         // userID|name|password|phone#|email|institutionName
 
         System.out.print("Enter your name as: (First Name) (Last Name): ");
-        String name = validateInput(userIn, "[A-Z][a-z]* [A-Z][a-z]*", "(First Name) (Last Name)");
+        String name = validateInput(userIn, "[A-Z][a-z]+ [A-Z][a-z]+", "(First Name) (Last Name)");
 
         System.out.print("Enter your password (cannot contain | and must be between 8 and 12 characters): ");
-        String password = validateInput(userIn, "[^|]{8, 12}", "cannot contain | and must be between 8 and 12 characters");
+        String password = validateInput(userIn, "[^|]{8,12}", "cannot contain | and must be between 8 and 12 characters");
 
-        System.out.print("Enter your phone number as (XXX)XXX-XXXX : ");
-        String phoneNum = validateInput(userIn, "([0-9]{3})[0-9]{3}-[0-9]{4}", "(XXX)XXX-XXXX");
+        System.out.print("Enter your phone number with no separation between digits : ");
+        String phoneNum = validateInput(userIn, "[0-9]{10}", "no separation between digits");
 
         System.out.print("Enter your email as username@email.com");
         String email = validateInput(userIn, "[A-z]+@[A-z]+\\.[A-z]+", "username@email.com");
 
         System.out.print("Enter your institution name: ");
         String instName = userIn.nextLine();
+
+        String newAccountEntry = String.join("|", Integer.toString(userID), name, password, phoneNum, email, instName);
+        AccountUpdater.appendRecord(newAccountEntry, "doctor.txt");
         return userID;
 
     }
