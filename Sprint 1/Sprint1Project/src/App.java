@@ -98,7 +98,7 @@ public class App {
         System.out.print("Enter your phone number with no separation between digits : ");
         String phoneNum = validateInput(userIn, "[0-9]{10}", "no separation between digits");
 
-        System.out.print("Enter your email as username@email.com");
+        System.out.print("Enter your email as username@email.com : ");
         String email = validateInput(userIn, "[A-z]+@[A-z]+\\.[A-z]+", "username@email.com");
 
         System.out.print("Enter your institution name: ");
@@ -113,9 +113,33 @@ public class App {
     private static int createPaitAcc(Scanner userIn) {
         int maxID = getMaxID("paitent.txt");
         int userID = maxID + 1;
-        // TODO: ask for the user's name, phone#, email, birthday, sex and insurance provider and verify their validity
-        // TODO: add the user's data to the doctor.txt in the following order with | between them:
+        // Adds the user's data to the paitent.txt in the following order with | between them:
         // userID|name|password|phone#|email|birthday|sex|insuranceProvider
+
+        System.out.print("Enter your name as: (First Name) (Last Name): ");
+        String name = validateInput(userIn, "[A-Z][a-z]+ [A-Z][a-z]+", "(First Name) (Last Name)");
+
+        System.out.print("Enter your password (cannot contain | and must be between 8 and 12 characters): ");
+        String password = validateInput(userIn, "[^|]{8,12}", "cannot contain | and must be between 8 and 12 characters");
+
+        System.out.print("Enter your phone number with no separation between digits : ");
+        String phoneNum = validateInput(userIn, "[0-9]{10}", "no separation between digits");
+
+        System.out.print("Enter your email as username@email.com : ");
+        String email = validateInput(userIn, "[A-z]+@[A-z]+\\.[A-z]+", "username@email.com");
+
+        System.out.print("Enter your birthdate as MM-DD-YYYY: ");
+        String birthdate = validateInput(userIn, "[0-9]{2}-[0-9]{2}-[0-9]{4}", "MM-DD-YYYY");
+
+        System.out.print("Enter your sex (M or F): ");
+        String sex = validateInput(userIn, "[M,F]", "M or F");
+
+        System.out.print("Enter your insurance provider: ");
+        String insuranceProvider = userIn.nextLine();
+
+        String newAccountEntry = String.join("|", Integer.toString(userID), name, password, phoneNum, email, birthdate, sex, insuranceProvider);
+        AccountUpdater.appendRecord(newAccountEntry, "paitent.txt");
+
         return userID;
     }
 
