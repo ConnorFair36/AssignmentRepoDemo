@@ -62,7 +62,11 @@ public class App {
             userID = createAccount(userType, userIn);
         } else {
             // lets the user login, after 3 failed attempts, the user will be kicked out of the program
-            userID = loginUser(userType);
+            userID = loginUser(userType, userIn);
+        }
+        if (userID == -2) {
+            userIn.close();
+            System.exit(0);
         }
         System.out.println(userID);
         // exit the program once the user has finished their operations
@@ -162,25 +166,28 @@ public class App {
         }
     }
 
-    private static int loginUser(String userType) {
-        if (userType.equals("paitent") || userType.equals("Paitent")) {
-            return loginPaitent();
+    // lets the user login. if sucessfull, retuns the userID, else -2
+    private static int loginUser(String userType, Scanner userIn) {
+        String filename = (userType.equals("paitent") || userType.equals("Paitent")) ? "paitent.txt" : "doctor.txt";
+        
+        System.out.print("Enter your name as: (First Name) (Last Name): ");
+        String name = validateInput(userIn, "[A-Z][a-z]+ [A-Z][a-z]+", "(First Name) (Last Name)");
+
+        String userData = AccountUpdater.findAccountbyName(name, filename);
+        // Gets a password from the user and verify that it is the same as the one in the record
+        // if the user enters the wrong password 3 times, terminate the program
+        String userPassword = userData.split("\\|", 4)[2];
+        int attempsLeft = 3;
+        while (attempsLeft > 0) {
+            System.out.print("Please enter your password: ");
+            String enteredPassword = userIn.nextLine();
+            if (enteredPassword.equals(userPassword)) {
+                return Integer.parseInt(userData.split("\\|", 2)[0]);
+            }
+            attempsLeft -= 1;
+            System.out.printf("Invalid password, you have %d attempts left\n", attempsLeft);
         }
-        return loginDoctor();
-    }
-
-    private static int loginPaitent() {
-        // TODO: get the user's name and find it in the paitent.txt file
-        // TODO: get a password from the user and verify that it is the same as the one in the record
-        // TODO: if the user enters the wrong password 3 times, terminate the program
-        return -10000;
-    }
-
-    private static int loginDoctor() {
-        // TODO: get the user's name and find it in the doctor.txt file
-        // TODO: get a password from the user and verify that it is the same as the one in the record
-        // TODO: if the user enters the wrong password 3 times, terminate the program
-        return -10000;
+        return -2;
     }
 
     private static void paitentOpps(int userID) {
