@@ -1,6 +1,1 @@
-public class Medication{
-  private String name;
-  private boolean taken;
-  private DateTime timestamp;
-//edit
-}
+
