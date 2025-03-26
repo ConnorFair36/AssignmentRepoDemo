@@ -1,11 +1,28 @@
 [
     {
-        "name": "adderall",
-        "conditions": "take with food",
+        "name": "Test medication 1",
+        "conditions": "",
         "severity": 3,
         "time1": {
             "hours": 8,
             "minutes": 0
+        },
+        "time2": {
+            "hours": 14,
+            "minutes": 14
+        },
+        "time3": {
+            "hours": 20,
+            "minutes": 0
+        }
+    },
+    {
+        "name": "Test medication 2",
+        "conditions": "take with food",
+        "severity": 0,
+        "time1": {
+            "hours": 18,
+            "minutes": 42
         },
         "time2": {
             "hours": -1,

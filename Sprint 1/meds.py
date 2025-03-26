@@ -4,6 +4,7 @@ from reminder import reminder
 class medsManager():
     def __init__(self, name=""):
         self.reminder = reminder()
+        self.medsArray = self.getMedsList()
     def addMedication(self, name="", conditions="", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
         if(severity < 0 or severity > 5):#returns false if medicaiton information is invalid
             return False
