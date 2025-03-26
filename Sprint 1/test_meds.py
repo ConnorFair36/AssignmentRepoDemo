@@ -42,7 +42,23 @@ class MedsManagerTest(unittest.TestCase):
                                            'time3': {'hours': -1, 'minutes': -1}},
                          "Data of the .json file is different from the expected input")
 
-    # TODO add test cases 5 & 6 from the google doc
+    # attempts to place an entry with an invalid time input, which should cause the .json file to remain empty
+    def test_case_5(self):
+        # the function should return false
+        self.assertFalse(self.medsManager.addMedication("adderall", "take with food", 3, [-1, 200000]))
+        self.assertFalse(self.medsManager.addMedication("adderall", "take with food", 3, [10000, -200000]))
+        current_meds = self.medsManager.getMedsList()
+        # the .json file should remain empty
+        self.assertEqual(len(current_meds), 0, "An invalid medication record was recorded")
+
+    # attempts to place an entry with an invalid severity, the .json file should remain empty
+    def test_case_6(self):
+        self.assertFalse(self.medsManager.addMedication("lava", "what is wrong with you?", 1000000000000000000, [0, 0], [12, 30], [23, 59]))
+        self.assertFalse(self.medsManager.addMedication("healing juice", "magical healing properties", -1000000000000000000, [0, 0], [12, 30],
+                                           [23, 59]))
+        current_meds = self.medsManager.getMedsList()
+        self.assertEqual(len(current_meds), 0, "An invalid medication record was recorded")
+
 
 
 if __name__ == '__main__':
