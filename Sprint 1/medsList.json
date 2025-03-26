@@ -8,23 +8,6 @@
             "minutes": 0
         },
         "time2": {
-            "hours": 14,
-            "minutes": 14
-        },
-        "time3": {
-            "hours": 20,
-            "minutes": 0
-        }
-    },
-    {
-        "name": "xanax",
-        "conditions": "",
-        "severity": 3,
-        "time1": {
-            "hours": 7,
-            "minutes": 0
-        },
-        "time2": {
             "hours": -1,
             "minutes": -1
         },
