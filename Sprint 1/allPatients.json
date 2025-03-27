@@ -1,0 +1,22 @@
+[
+    {
+        "id": 0,
+        "name": "adderall",
+        "password": "take with food",
+        "phone number": "8048041234",
+        "email": "no",
+        "birthday": "MM-DD-YYYY",
+        "sex": "M",
+        "insurance provider": "yeet"
+    },
+    {
+        "id": 1,
+        "name": "John Doe",
+        "password": "notapassword999",
+        "phone": "8048040845",
+        "email": "yeet@none.com",
+        "birthday": "12-31-1880",
+        "sex": "M",
+        "insurance provider": "none"
+    }
+]
