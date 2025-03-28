@@ -17,6 +17,11 @@ def _get_all_records() -> list[dict]:
     f.close()
     return all_records
 
+def _update_records(all_records: list[dict]) -> None:
+    with open("allPatients.json", mode="w", encoding="utf-8") as f:
+        json.dump(all_records, f, indent=4)
+        f.close()
+
 class PatientAccount:
     def __init__(self):
         self.patient_account = {}
@@ -57,15 +62,49 @@ class PatientAccount:
                      "sex": sex,
                      "insurance provider": insur_prov}
         all_records.append(self.patient_account)
-        with open("allPatients.json", mode="w", encoding="utf-8") as f:
-            json.dump(all_records, f, indent=4)
-            f.close()
+        _update_records(all_records)
 
-    # TODO update an account
-    # TODO delete an account
+    def update_account(self, name="", password="", phone_number="", email="", birthday="", sex="", insur_prov="") -> None:
+        """Updates an existing account and saves it in allPatients.json.
+        :param name: The updated name of the account.
+        :param password: <PASSWORD>.
+        :param phone_number: all 10 digits with no parentheses or dashes.
+        :param email: Email address.
+        :param birthday: MM-DD-YYYY format.
+        :param sex: "M" or "F" ONLY.
+        :param insur_prov: Insurance provider name.
+        :return: None"""
+        changes_dict = {"name": name,
+                        "password": password,
+                        "phone": phone_number,
+                        "email": email,
+                        "birthday": birthday,
+                        "sex": sex,
+                        "insurance provider": insur_prov}
+        filtered_changes = {key: value for key, value in changes_dict.items() if value != ""}
+        # replaces all updated records in the currently stored account
+        self.patient_account.update(filtered_changes)
+        # updates the account in the .json file
+        all_records = _get_all_records()
+        all_id = [r["id"] for r in all_records]
+        all_records[all_id.index(self.patient_account["id"])].update(filtered_changes)
+        _update_records(all_records)
+
+    def delete_account(self) -> None:
+        """Deletes the current user's account from allPatients.json and this object.
+        :return: None"""
+        all_records = _get_all_records()
+        all_id = [r["id"] for r in all_records]
+        all_records.remove(self.patient_account)
+        _update_records(all_records)
+        self.patient_account = {}
 
 
 if __name__ == "__main__":
     temp = PatientAccount()
-    temp.create_account("John Doe", "notapassword999", "8048040845", "yeet@none.com", "12-31-1880", "M", "none")
+    temp.find_account("John Doe", "notapassword999")
+    print(temp.patient_account)
+    temp.update_account(insur_prov="I'm too broke :(")
+    print(temp.patient_account)
+    temp.delete_account()
     print(temp.patient_account)
