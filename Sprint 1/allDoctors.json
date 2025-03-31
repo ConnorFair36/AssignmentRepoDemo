@@ -1,0 +1,18 @@
+[
+    {
+        "id": 0,
+        "name": "John Doe",
+        "password": "notapassword999",
+        "phone": "8048048765",
+        "email": "no@maybe.net",
+        "institution name": "Will's big Hospital"
+    },
+    {
+        "id": 1,
+        "name": "Kayla Dirt",
+        "password": "overKill1928384756",
+        "phone": "1234567889",
+        "email": "yes@web.com",
+        "institution name": "Will's big Hospital 2 electric boogaloo"
+    }
+]
