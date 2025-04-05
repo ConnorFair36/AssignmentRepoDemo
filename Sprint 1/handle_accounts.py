@@ -214,8 +214,10 @@ class DoctorAccount(_Account):
         all_names = [r["name"] for r in all_patients]
         try:
             index = all_names.index(name)
-            self.patient_list.append(index)
-            self.__update_patient_list()
+            new_id = all_patients[index]["id"]
+            if new_id not in all_patients:
+                self.patient_list.append(new_id)
+                self.__update_patient_list()
         except ValueError:
             return False
         return True
