@@ -223,8 +223,9 @@ class DoctorAccount(_Account):
         return True
 
     def remove_patient(self, pid: int) -> None:
-        self.patient_list.remove(pid)
-        self.__update_patient_list()
+        if pid in self.patient_list:
+            self.patient_list.remove(pid)
+            self.__update_patient_list()
 
 
 
