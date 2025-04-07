@@ -53,9 +53,10 @@ class _Account:
 	def delete_account(self) -> None:
 		"""Deletes the current user's account from this Account types .json file and this object.
 		:return: None"""
-		self.all_records.remove(self.account)
-		self.__update_records()
-		self.account = {}
+		if self.account:
+			self.all_records.remove(self.account)
+			self.__update_records()
+			self.account = {}
 
 
 # id|name|password|phone#|email|birthday|sex|insuranceProvider
