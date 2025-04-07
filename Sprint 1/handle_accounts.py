@@ -176,10 +176,12 @@ class DoctorAccount(_Account):
 		all_records = self.__get_patient_doc_list()
 		all_keys = [list(i.keys())[0] for i in all_records]
 		try:
-			index = all_keys.index(str(self.account["id"]))
-			return list(all_records[index].values())[0]
+			if self.account:
+				index = all_keys.index(str(self.account["id"]))
+				return list(all_records[index].values())[0]
 		except ValueError:
 			return []
+		return []
 
 	def __update_patient_list(self) -> None:
 		# gets all doctor to patient pairings and puts them in a list
