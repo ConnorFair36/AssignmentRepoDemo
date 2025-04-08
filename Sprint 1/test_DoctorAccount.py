@@ -85,6 +85,19 @@ test_data = [
   }
 ]
 
+test_data2 = [
+  { "1": [3, 4, 5] },
+  { "2": [6, 7] },
+  { "3": [8, 9, 10, 11] },
+  { "4": [12, 13] },
+  { "5": [14, 15, 16] },
+  { "6": [17, 18, 19] },
+  { "7": [20, 21] },
+  { "8": [22, 23, 24, 25] },
+  { "9": [26, 27, 28, 29] }
+]
+
+
 test_account = {"name": "Nota Doc",
 				"password": "password123",
 				"phone": "8888880000",
@@ -93,6 +106,11 @@ test_account = {"name": "Nota Doc",
 
 def empty_json_file():
 	with open("allDoctors.json", mode="w", encoding="utf-8") as f:
+		json.dump([], f, indent=4)
+		f.close()
+
+def empty_docPat_file():
+	with open("doctorPatients.json", mode="w", encoding="utf-8") as f:
 		json.dump([], f, indent=4)
 		f.close()
 
@@ -110,10 +128,27 @@ def get_file_data():
 	f.close()
 	return all_records
 
+def get_docPat_file():
+	all_records = []
+	try:
+		with open("doctorPatients.json", mode="r", encoding="utf-8") as f:
+			try:
+				all_records = json.load(f)
+			except json.decoder.JSONDecodeError:
+				pass
+	except FileNotFoundError:
+		print(f"File 'doctorPatients.json' not found! Aborting")
+		exit(1)
+	f.close()
+	return all_records
+
 class TestDoctorAccount(unittest.TestCase):
 	def setUp(self):
 		with open("allDoctors.json", mode="w", encoding="utf-8") as f:
 			json.dump(test_data, f, indent=4)
+			f.close()
+		with open("doctorPatients.json", mode="w", encoding="utf-8") as f:
+			json.dump(test_data2, f, indent=4)
 			f.close()
 		self.DoctorAccount = DoctorAccount()
 
@@ -215,6 +250,71 @@ class TestDoctorAccount(unittest.TestCase):
 		self.assertEqual(self.DoctorAccount.all_records, get_file_data())
 		self.assertFalse(self.DoctorAccount.account)
 
+	# add patient to list empty .json and no list
+	def test_case_25(self):
+		empty_docPat_file()
+		self.DoctorAccount.find_account(test_data[0]["name"], test_data[0]["password"])
+		self.assertTrue(self.DoctorAccount.add_patient("James Wilson"))
+		self.assertEqual(self.DoctorAccount.patient_list, get_docPat_file()[0]["0"])
+
+	# add patient to list filled .json and this doctor has no patient list
+	def test_case_26(self):
+		self.DoctorAccount.find_account(test_data[0]["name"], test_data[0]["password"])
+		self.assertTrue(self.DoctorAccount.add_patient("James Wilson"))
+		self.assertEqual(self.DoctorAccount.patient_list, get_docPat_file()[-1]["0"])
+
+	# add patient to list filled .json, Doc already has some other patients
+	def test_case_27(self):
+		self.DoctorAccount.find_account(test_data[1]["name"], test_data[1]["password"])
+		self.assertTrue(self.DoctorAccount.add_patient("James Wilson"))
+		self.assertEqual(self.DoctorAccount.patient_list, get_docPat_file()[0]["1"])
+
+	# add patient to list filled .json, Doc already has some other patients, including this patient
+	def test_case_28(self):
+		self.DoctorAccount.find_account(test_data[1]["name"], test_data[1]["password"])
+		self.assertTrue(self.DoctorAccount.add_patient("Olivia Brown"))
+		self.assertEqual(self.DoctorAccount.patient_list, get_docPat_file()[0]["1"])
+		self.assertEqual(len(self.DoctorAccount.patient_list), 3)
+
+	# remove patient where no doctors have patients
+	def test_case_29(self):
+		empty_docPat_file()
+		self.DoctorAccount = DoctorAccount()
+		self.DoctorAccount.find_account(test_data[0]["name"], test_data[0]["password"])
+		self.DoctorAccount.remove_patient(6)
+		self.assertEqual(self.DoctorAccount.patient_list, [])
+		self.assertEqual(get_docPat_file(), [])
+
+	# remove patient where the current doctor has no patients
+	def test_case_30(self):
+		self.DoctorAccount.find_account(test_data[0]["name"], test_data[0]["password"])
+		self.DoctorAccount.remove_patient(6)
+		self.assertEqual(self.DoctorAccount.patient_list, [])
+		self.assertEqual(get_docPat_file(), test_data2)
+
+	# remove patient where the patient is the only one in the list
+	def test_case_31(self):
+		self.DoctorAccount.find_account(test_data[0]["name"], test_data[0]["password"])
+		self.DoctorAccount.add_patient("Noah Smith")
+		self.assertEqual(self.DoctorAccount.patient_list, [2])
+		self.assertNotEqual(get_docPat_file(), test_data2)
+		self.DoctorAccount.remove_patient(2)
+		self.assertEqual(self.DoctorAccount.patient_list, [])
+		self.assertEqual(get_docPat_file(), test_data2)
+
+	# remove patient where the patient is one of the patients in the list
+	def test_case_32(self):
+		self.DoctorAccount.find_account(test_data[1]["name"], test_data[1]["password"])
+		self.DoctorAccount.remove_patient(4)
+		self.assertEqual(self.DoctorAccount.patient_list, [3, 5])
+		self.assertNotEqual(get_docPat_file()[0]["1"], test_data2[0]["1"])
+
+	# remove patient where the patient is not in the list
+	def test_case_33(self):
+		self.DoctorAccount.find_account(test_data[1]["name"], test_data[1]["password"])
+		self.DoctorAccount.remove_patient(2)
+		self.assertEqual(self.DoctorAccount.patient_list, test_data2[0]["1"])
+		self.assertEqual(get_docPat_file()[0]["1"], test_data2[0]["1"])
 
 if __name__ == '__main__':
 	unittest.main()

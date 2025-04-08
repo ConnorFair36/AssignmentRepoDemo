@@ -222,10 +222,8 @@ class DoctorAccount(_Account):
 		all_names = [r["name"] for r in all_patients]
 		try:
 			index = all_names.index(name)
-			self.patient_list.append(index)
-			self.__update_patient_list()
 			new_id = all_patients[index]["id"]
-			if new_id not in all_patients:
+			if new_id not in self.patient_list:
 				self.patient_list.append(new_id)
 				self.__update_patient_list()
 		except ValueError:
@@ -233,8 +231,9 @@ class DoctorAccount(_Account):
 		return True
 
 	def remove_patient(self, pid: int) -> None:
-		self.patient_list.remove(pid)
-		self.__update_patient_list()
+		if pid in self.patient_list:
+			self.patient_list.remove(pid)
+			self.__update_patient_list()
 
 
 if __name__ == "__main__":
