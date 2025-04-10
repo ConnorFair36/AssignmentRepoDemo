@@ -237,14 +237,22 @@ class DoctorAccount(_Account):
 
 
 if __name__ == "__main__":
-	temp = DoctorAccount()
-	temp.find_account("Alice Morgan", "securePass123!")
-	print(temp.account)
-	print(temp.patient_list)
-	temp.add_patient("Sophia Martinez")
-	print(temp.patient_list)
-	temp.remove_patient(5)
-	print(temp.patient_list)
-	# temp.update_account(email="no@maybe.net")
-	# print(temp.account)
-	# temp.delete_account()
+	temp_doc = DoctorAccount()
+	temp_doc.find_account("James Thompson", "secureJames99")
+	print(temp_doc.account)
+	print(temp_doc.patient_list)
+
+	temp_doc.add_patient("Emma Garcia")
+	print(temp_doc.patient_list)
+
+	temp_doc.remove_patient(5)
+	print(temp_doc.patient_list)
+
+	print()
+
+	temp_pat = PatientAccount()
+	temp_pat.create_account("Connor Fair", "acoolpassword", "1231231234",
+							"duck@not.com", "MM-DD-YYYY", "M", "no insurance")
+	print(temp_pat.account)
+	temp_pat.update_account(birthday="12-13-1608")
+	print(temp_pat.account)

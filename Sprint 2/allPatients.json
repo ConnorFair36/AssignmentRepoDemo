@@ -298,5 +298,15 @@
         "birthday": "09-03-1995",
         "sex": "F",
         "insurance provider": "Cigna"
+    },
+    {
+        "id": 30,
+        "name": "Connor Fair",
+        "password": "acoolpassword",
+        "phone": "1231231234",
+        "email": "duck@not.com",
+        "birthday": "12-13-1608",
+        "sex": "M",
+        "insurance provider": "no insurance"
     }
 ]
