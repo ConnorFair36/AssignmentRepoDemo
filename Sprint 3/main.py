@@ -19,5 +19,5 @@ TopherMaguire.addMedication("Test medicaiton 3", "don't mix with alcohol (;", 5,
 TopherMaguire.removeMedicaiton("Test medication 2")
 # TopherMaguire.generateReport()
 
-# while(1):
-#      TopherMaguire.reminderCheck()
+while(1):
+     TopherMaguire.reminderCheck()

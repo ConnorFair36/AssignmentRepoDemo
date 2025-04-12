@@ -1,11 +1,11 @@
 [
     {
         "name": "Test medication 1",
-        "conditions": "",
+        "conditions": "None",
         "severity": 3,
         "time1": {
-            "hours": 12,
-            "minutes": 41
+            "hours": 13,
+            "minutes": 35
         },
         "time2": {
             "hours": 14,
@@ -21,8 +21,8 @@
         "conditions": "don't mix with alcohol (;",
         "severity": 5,
         "time1": {
-            "hours": 12,
-            "minutes": 41
+            "hours": 13,
+            "minutes": 35
         },
         "time2": {
             "hours": 17,

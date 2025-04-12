@@ -31,3 +31,6 @@ class patient():
 
     def generateReport(self):
         self.medsManager.generateReport()
+    
+    def clearReport(self):
+        self.medsManager.clearReport()

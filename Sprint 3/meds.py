@@ -3,7 +3,8 @@ from reminder import reminder
 
 class medsManager():
     def __init__(self, name=""):
-        self.reminder = reminder()
+        # self.reminder = reminder()
+        self.reminderArray = []
         self.listFileName = name + "Meds_List.json"
         self.reportFileName = name + "Report.txt"
         # try:#creates meds list file
@@ -110,13 +111,27 @@ class medsManager():
             print("ERROR: medication not found in list")
         
     def reminderCheck(self):
-        for medication in self.medsArray:
-            self.reminder.check(medication, self.reportFileName)
+        self.medsArray = self.getMedsList()
+        if(len(self.reminderArray) != len(self.medsArray)):
+            self.reminderArray = [None for i in range(len(self.medsArray))]
+            for c in range(len(self.medsArray)):
+                self.reminderArray[c] = reminder()
+        for c in range(len(self.medsArray)):
+            self.reminderArray[c].check(self.medsArray[c], self.reportFileName)
     
     def generateReport(self):
         try:
             with open(self.reportFileName, mode="r", encoding="utf-8") as f:
                 print(f.read(), end="")
+        except FileNotFoundError:
+            print(f"File '{self.reportFileName}' not found! Aborting")
+            exit(1)
+        f.close()
+    
+    def clearReport(self):
+        try:
+            with open(self.reportFileName, mode="w", encoding="utf-8") as f:
+                pass
         except FileNotFoundError:
             print(f"File '{self.reportFileName}' not found! Aborting")
             exit(1)
