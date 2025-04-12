@@ -4,12 +4,21 @@ from reminder import reminder
 class medsManager():
     def __init__(self, name=""):
         self.reminder = reminder()
-        self.fileName = name + "Meds_List.json"
-        try:
-            with open(self.fileName, mode="w", encoding="utf-8") as f:
+        self.listFileName = name + "Meds_List.json"
+        self.reportFileName = name + "Report.txt"
+        try:#creates meds list file
+            with open(self.listFileName, mode="w", encoding="utf-8") as f:
                 pass
         except FileNotFoundError:
-            print(f"File '{self.fileName}' not found! Aborting")
+            print(f"File '{self.listFileName}' not found! Aborting")
+            exit(1)
+        f.close()
+
+        try:#creates report file
+            with open(self.reportFileName, mode="r", encoding="utf-8") as f:
+                pass
+        except FileNotFoundError:
+            print(f"File '{self.reportFileName}' not found! Aborting")
             exit(1)
         f.close()
         self.medsArray = self.getMedsList()
@@ -49,14 +58,14 @@ class medsManager():
     def getMedsList(self):
         medsArray = []
         try:
-            with open(self.fileName, mode="r", encoding="utf-8") as f:
+            with open(self.listFileName, mode="r", encoding="utf-8") as f:
                 try:
                     medsArray = json.load(f)
                 except json.decoder.JSONDecodeError:
                     pass
                 
         except FileNotFoundError:
-            print(f"File '{self.fileName}' not found! Aborting")
+            print(f"File '{self.listFileName}' not found! Aborting")
             exit(1)
         f.close()
         return medsArray
@@ -65,19 +74,19 @@ class medsManager():
         #self.medsArray = self.getMedsList()
         
         try:
-            with open(self.fileName, mode="w", encoding="utf-8") as self.medsList:
+            with open(self.listFileName, mode="w", encoding="utf-8") as self.medsList:
                 json.dump(self.medsArray, self.medsList, indent = 4)
         except FileNotFoundError:
-            print(f"File 'medsList.json' not found! Aborting")
+            print(f"File '{self.listFileName}' not found! Aborting")
             exit(1)
         self.medsList.close()
 
     def clear(self):
         try:
-            with open(self.fileName, mode="w", encoding="utf-8") as self.medsList:
+            with open(self.listFileName, mode="w", encoding="utf-8") as self.medsList:
                 pass
         except FileNotFoundError:
-            print(f"File 'medsList.json' not found! Aborting")
+            print(f"File '{self.listFileName}' not found! Aborting")
             exit(1)
         self.medsList.close()
 
@@ -91,13 +100,19 @@ class medsManager():
         try:
             if(toRemove != None): self.medsArray.remove(toRemove)
             self.writeMedication()
-            print(self.medsArray)
+            # print(self.medsArray)
         except ValueError:
            print("ERROR: medication not found in list")
         
-        
-
     def reminderCheck(self):
         for medication in self.medsArray:
-            self.reminder.check(medication)
-
+            self.reminder.check(medication, self.reportFileName)
+    
+    def generateReport(self):
+        try:
+            with open(self.reportFileName, mode="r", encoding="utf-8") as f:
+                print(f.read())
+        except FileNotFoundError:
+            print(f"File '{self.reportFileName}' not found! Aborting")
+            exit(1)
+        f.close()

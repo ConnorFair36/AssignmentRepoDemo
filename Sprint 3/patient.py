@@ -28,3 +28,6 @@ class patient():
     
     def reminderCheck(self):
         self.medsManager.reminderCheck()
+
+    def generateReport(self):
+        self.medsManager.generateReport()

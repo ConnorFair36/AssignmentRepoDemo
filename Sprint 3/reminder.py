@@ -21,8 +21,10 @@ class reminder():
                             "minutes" : -1
                         },
                        }
+                  , fileName = ""
                 ):
         self.med = med.copy()
+        self.fileName = fileName
         hour = time.localtime()[3]
         minute = time.localtime()[4]
         if(self.med["time1"]["hours"] == hour and self.med["time1"]["minutes"] == minute):
@@ -34,7 +36,7 @@ class reminder():
 
     def sendReminder(self, minute):
         if(self.reminderSent == False):
-            window.popupmsg(self.med)
+            window.popupmsg(self.med, self.fileName)
             self.reminderSent = True
         elif(time.localtime()[4] > minute):
             self.reminderSent = False
