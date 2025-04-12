@@ -6,7 +6,7 @@ class reminder():
         self.reminderSent = False
     def check(self, med = {
                         "name" : "",
-                        "conditions" : "",
+                        "conditions" : "None",
                         "severity" : 0,
                         "time1" :{
                             "hours" : -1,

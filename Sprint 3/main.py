@@ -12,12 +12,12 @@ TopherMaguire = patient("Topher", "Maguire", "349-298-2918", "United Healthcare"
 
 TopherMaguire.clearMedsList()
 
-TopherMaguire.addMedication("Test medication 1", "", 3, [8, 0], [14, 14], [20,0])
+TopherMaguire.addMedication("Test medication 1", "None", 3, [time.localtime()[3], time.localtime()[4]], [14, 14], [20,0])
 TopherMaguire.addMedication("Test medication 2", "take with food", 0, [14, 19])
-TopherMaguire.addMedication("Test medicaiton 3", "don't mix with alcohol (;", 5, [20, time.localtime()[4]], [17, 24])
+TopherMaguire.addMedication("Test medicaiton 3", "don't mix with alcohol (;", 5, [time.localtime()[3], time.localtime()[4]], [17, 24])
 
 TopherMaguire.removeMedicaiton("Test medication 2")
-TopherMaguire.generateReport()
+# TopherMaguire.generateReport()
 
-while(1):
-     TopherMaguire.reminderCheck()
+# while(1):
+#      TopherMaguire.reminderCheck()

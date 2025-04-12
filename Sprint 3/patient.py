@@ -17,7 +17,7 @@ class patient():
         }
         self.medsManager = medsManager(self.info["name"]["first"]+"_"+self.info["name"]["last"]+"_")
 
-    def addMedication(self, name="", conditions="", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
+    def addMedication(self, name="", conditions="None", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
         self.medsManager.addMedication(name, conditions, severity, time1, time2, time3)
     
     def clearMedsList(self):

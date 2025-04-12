@@ -4,8 +4,8 @@
         "conditions": "",
         "severity": 3,
         "time1": {
-            "hours": 8,
-            "minutes": 0
+            "hours": 12,
+            "minutes": 41
         },
         "time2": {
             "hours": 14,
@@ -21,8 +21,8 @@
         "conditions": "don't mix with alcohol (;",
         "severity": 5,
         "time1": {
-            "hours": 20,
-            "minutes": 52
+            "hours": 12,
+            "minutes": 41
         },
         "time2": {
             "hours": 17,
