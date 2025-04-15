@@ -7,16 +7,16 @@ class medsManager():
         self.reminderArray = []
         self.listFileName = name + "Meds_List.json"
         self.reportFileName = name + "Report.txt"
-        # try:#creates meds list file
-        #     with open(self.listFileName, mode="r", encoding="utf-8") as f:
-        #         pass
-        # except FileNotFoundError:
-        #     print(f"File '{self.listFileName}' not found! Aborting")
-        #     exit(1)
-        # f.close()
+        try:#creates meds list file
+            with open(self.listFileName, mode="a", encoding="utf-8") as f:
+                pass
+        except FileNotFoundError:
+            print(f"File '{self.listFileName}' not found! Aborting")
+            exit(1)
+        f.close()
 
         try:#creates report file
-            with open(self.reportFileName, mode="r", encoding="utf-8") as f:
+            with open(self.reportFileName, mode="a", encoding="utf-8") as f:
                 pass
         except FileNotFoundError:
             print(f"File '{self.reportFileName}' not found! Aborting")
