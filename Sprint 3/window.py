@@ -26,6 +26,7 @@ class popupmsg():
         confirm.grid(row=1, column=0, pady=10)
         ignore.grid(row=1, column=1, pady=10)
         conditions.grid(row=1, column=2)
+        self.popup.call('wm', 'attributes', '.', '-topmost', '1')
         self.popup.mainloop()
 
     def report(self):
