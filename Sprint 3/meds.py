@@ -1,4 +1,5 @@
 import json
+import time
 from reminder import reminder
 
 class medsManager():
@@ -6,7 +7,8 @@ class medsManager():
         # self.reminder = reminder()
         self.reminderArray = []
         self.listFileName = name + "Meds_List.json"
-        self.reportFileName = name + "Report.txt"
+        self.reportFileName = name + "Report.json"
+        
         try:#creates meds list file
             with open(self.listFileName, mode="a", encoding="utf-8") as f:
                 pass
@@ -25,7 +27,7 @@ class medsManager():
 
         self.medsArray = self.getMedsList()
         
-    
+
     def addMedication(self, name="", conditions="None", severity=0, time1=[-1, -1], time2=[-1, -1], time3=[-1, -1]):
         if(severity < 0 or severity > 5):#returns false if medicaiton information is invalid
             return False
@@ -112,17 +114,31 @@ class medsManager():
         
     def reminderCheck(self):
         self.medsArray = self.getMedsList()
-        if(len(self.reminderArray) != len(self.medsArray)):
+        if(len(self.reminderArray) != len(self.medsArray)):#creates array large enough for all medications
             self.reminderArray = [None for i in range(len(self.medsArray))]
             for c in range(len(self.medsArray)):
-                self.reminderArray[c] = reminder()
+                self.reminderArray[c] = reminder()#instantiates new reminder for each medication
         for c in range(len(self.medsArray)):
-            self.reminderArray[c].check(self.medsArray[c], self.reportFileName)
+            self.reminderArray[c].check(self.medsArray[c], self.reportFileName)#checks each medication
     
+
+
+    def printReport(self, report={"name":"", "time":time.gmtime(0)}):
+        if(report["time"][3] < 13):
+            time = f"{report['time'][3]}:{report['time'][4]:02} am"
+        else:
+            time = f"{report['time'][3]-12}:{report['time'][4]:02} pm"
+        print(f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}")
+
     def generateReport(self):
         try:
             with open(self.reportFileName, mode="r", encoding="utf-8") as f:
-                print(f.read(), end="")
+                try:
+                    tempArray = json.load(f)
+                    for report in tempArray:
+                        self.printReport(report)
+                except json.decoder.JSONDecodeError:
+                    pass
         except FileNotFoundError:
             print(f"File '{self.reportFileName}' not found! Aborting")
             exit(1)

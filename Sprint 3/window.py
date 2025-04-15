@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import time
+import json
 
 LARGE_FONT= ("Verdana", 12)
 NORM_FONT= ("Verdana", 10)
@@ -31,9 +32,19 @@ class popupmsg():
 
     def report(self):
         try:
-            with open(self.fileName, mode="a") as f:
-                f.write(self.med["name"] + f" taken at {time.localtime()[3] if (time.localtime()[3] < 13) else (time.localtime()[3]-12)}:{time.localtime()[4]:02} on {time.localtime()[1]}/{time.localtime()[2]}/{time.localtime()[0]}\n")
-                        
+            with open(self.fileName, mode="r+") as f:
+                reportList = []
+                try:
+                    reportList = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    pass
+                newReport = {
+                        "name" : self.med["name"],
+                        "time" : time.localtime()
+                    }
+                reportList.append(newReport)
+                f.seek(0)
+                json.dump(reportList, f, indent = 4)
         except FileNotFoundError:
             print(f"File '{self.fileName}' not found! Aborting")
             exit(1)
