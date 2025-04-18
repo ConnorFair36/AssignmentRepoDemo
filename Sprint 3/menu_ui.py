@@ -19,6 +19,7 @@ class MainWindow(tk.Tk):
             "doctor patient list" : DoctorPatientList(parent=self),
             "edit patient on list" : DoctorPatientN(parent=self),
             "edit patient med" : DoctorPatientNMedX(parent=self),
+            "generate patient report" : GeneratePatientReport(parent=self),
             # patient branch
             "welcome patient" : WelcomePatient(parent=self),
             # utility frames
@@ -44,7 +45,7 @@ class MainWindow(tk.Tk):
         self.current.pack(fill="both", expand="true")
         self.window_state = target
         if self.window_state in ["doctor profile", "edit doctor profile", "doctor patient list",
-                                 "edit patient on list", "edit patient med"]:
+                                 "edit patient on list", "edit patient med", "generate patient report"]:
             self.utilites.append(self.frames["Doctor NavBar"])
             self.utilites[-1].pack(side="bottom")
         self.update_idletasks()
@@ -294,10 +295,20 @@ class DoctorPatientN(ttk.Frame):
             med_frame = ttk.Frame(self.list_frame)
             med_frame.pack(fill="x")
             for j in range(2):
-                button = ttk.Button(med_frame, text=f"Button {i}", command=self.update_med)
+                button = ttk.Button(med_frame, text=f"Button {i}", command=lambda: self.update_med(False))
                 button.pack(side="left")
+        
+        self.add_button = ttk.Button(self, text="Add Medication", command=lambda: self.update_med(True))
+        self.add_button.pack()
+
+        self.gen_rep_button = ttk.Button(self, text="Generate Report", command=self.gen_report)
+        self.gen_rep_button.pack()
     
-    def update_med(self):
+    def gen_report(self):
+        self.parent.switch_to("generate patient report")
+    
+    def update_med(self, is_new: bool):
+        print(is_new)
         self.parent.switch_to("edit patient med")
 
 
@@ -319,6 +330,25 @@ class DoctorPatientNMedX(ttk.Frame):
             self.user_in.append(tk.Entry(self))
             self.user_in[-1].insert(0, data)
             self.user_in[-1].pack()
+        
+        self.save_button = ttk.Button(self, text="Save Changes", command=lambda : self.leave_edit(True))
+        self.save_button.pack()
+
+        self.cancel_button = ttk.Button(self, text="Cancel Changes", command=lambda : self.leave_edit(False))
+        self.cancel_button.pack()
+    
+    def leave_edit(self, save: bool):
+        print(save)
+        self.parent.switch_to("edit patient on list")
+    
+
+class GeneratePatientReport(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__()
+        self.parent = parent
+
+        self.title = tk.Label(self, text="GeneratePatientReport")
+        self.title.pack()
 
 
 class WelcomePatient(ttk.Frame):
