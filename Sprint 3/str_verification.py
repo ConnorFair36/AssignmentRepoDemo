@@ -8,7 +8,7 @@ def valid_password(password: str) -> bool:
     a special character."""
     if len(password) < 8:
         return False
-    return bool(re.match(".*[0-9].*", password)) and bool(re.match(".*[()+_\-@#$%\^&*].*", password))
+    return bool(re.match(".*[0-9].*", password)) and bool(re.match(".*[()+!_\-@#$%\^&*].*", password))
 
 def valid_phone_num(phone_num: str) -> bool:
     """Ensures the phone number is in one of these forms: xxxxxxxxxx, (xxx)xxx-xxxx"""
