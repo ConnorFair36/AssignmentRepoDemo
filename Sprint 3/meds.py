@@ -130,13 +130,17 @@ class medsManager():
             time = f"{report['time'][3]-12}:{report['time'][4]:02} pm"
         print(f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}")
 
-    def generateReport(self):
+    def generateReport(self, medName: str = None, time1: time.struct_time = None, time2: time.struct_time = None):
         try:
             with open(self.reportFileName, mode="r", encoding="utf-8") as f:
                 try:
                     tempArray = json.load(f)
                     for report in tempArray:
-                        self.printReport(report)
+                        if(medName != None):
+                            if(report["name"] == medName):
+                                self.printReport(report)
+                        else:
+                            self.printReport(report)
                 except json.decoder.JSONDecodeError:
                     pass
         except FileNotFoundError:
