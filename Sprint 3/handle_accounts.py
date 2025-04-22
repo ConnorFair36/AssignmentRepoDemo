@@ -234,6 +234,27 @@ class DoctorAccount(_Account):
 		if pid in self.patient_list:
 			self.patient_list.remove(pid)
 			self.__update_patient_list()
+	
+	def full_patient_data(self) -> dict[int:dict]:
+		all_patients = []
+		try:
+			with open("allPatients.json", mode="r", encoding="utf-8") as f:
+				try:
+					all_patients = json.load(f)
+				except json.decoder.JSONDecodeError:
+					pass
+		except FileNotFoundError:
+			print(f"File 'allPatients.json' not found! Aborting")
+			exit(1)
+		f.close()
+		patient_dict = dict()
+		for patient in all_patients:
+			if patient["id"] in self.patient_list:
+				patient_dict.update({patient["id"]:patient})
+				patient_dict[patient["id"]].pop("id")
+		return patient_dict
+			
+
 
 
 if __name__ == "__main__":

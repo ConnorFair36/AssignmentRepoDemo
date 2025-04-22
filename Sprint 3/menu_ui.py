@@ -283,7 +283,7 @@ class EditDoctorProfile(ttk.Frame):
         
 
 class DoctorPatientList(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent: MainWindow):
         super().__init__()
         self.parent = parent
 
@@ -313,6 +313,7 @@ class DoctorPatientList(ttk.Frame):
         self.add_button.pack()
     
     def edit_patient(self):
+        print(self.parent.account.full_patient_data())
         self.parent.switch_to("edit patient on list")
 
 
