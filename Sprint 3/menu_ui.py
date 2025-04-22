@@ -30,6 +30,7 @@ class MainWindow(tk.Tk):
             "edit patient profile" : EditPatientProfile(parent=self),
             "view patient meds": PatientViewMeds(parent=self),
             "view patient med x": PatientViewMedX(parent=self),
+            "edit patient med x": PatientEditMedX(parent=self),
             # utility frames
             "Doctor NavBar": DoctorPofileNavBar(parent=self),
             "Patient NavBar": PatientPofileNavBar(parent=self)
@@ -70,7 +71,8 @@ class MainWindow(tk.Tk):
                                  "edit patient on list", "edit patient med", "generate patient report"]:
             self.utilites.append(self.frames["Doctor NavBar"])
             self.utilites[-1].pack(side="bottom")
-        elif self.window_state in ["patient profile", "edit patient profile", "view patient meds", "view patient med x"]:
+        elif self.window_state in ["patient profile", "edit patient profile", "view patient meds", "view patient med x",
+                                   "edit patient med x"]:
             self.utilites.append(self.frames["Patient NavBar"])
             self.utilites[-1].pack(side="bottom")
         self.update_idletasks()
@@ -468,9 +470,24 @@ class PatientSignIn(ttk.Frame):
         self.log_in_button = ttk.Button(self, text="Sign In!", command=self.attempt_sign_in)
         self.log_in_button.pack()
 
+        self.go_back = ttk.Button(self, text="Go Back", command=self.return_to_wel)
+        self.go_back.pack()
+
+    def return_to_wel(self):
+        self.parent.switch_to("welcome patient")
+
     def attempt_sign_in(self):
-        # TODO merge with the the existing sign into account code from handle accounts
-        self.parent.switch_to("patient profile")
+        name = self.name_in.get()
+        password = self.password_in.get()
+        print(name, password)
+        if str_ver.valid_name(name) and str_ver.valid_password(password):
+            if self.parent.account.find_account(name, password):
+                print(self.parent.account.account["name"])
+                self.parent.switch_to("patient profile")
+            else:
+                print("account doesn't exist, lol")
+        else:
+            print("invalid name or password")  
 
 
 class PatientCreateAcc(ttk.Frame):
@@ -482,19 +499,36 @@ class PatientCreateAcc(ttk.Frame):
         self.title.pack()
 
         self.labels = ["Name", "Password", "Phone Number", "Email", "Birthday", "Sex", "Insurance Provider"]
+        self.format_info = ["", "Must be at least 8 characters long with \none number and one special character", "", "", 
+                            "Must be writen as: MM-DD-YYYY", "", ""]
         self.entries = {}
-        for label in self.labels:
+        for label, info in zip(self.labels, self.format_info):
             new_label = ttk.Label(self, text=f"{label}:")
             new_label.pack()
             self.entries[label] = ttk.Entry(self)
             self.entries[label].pack()
+            if info != "":
+                info_label = ttk.Label(self, text=info, font=("Arial", 10))
+                info_label.pack()
 
         self.create_account_button = ttk.Button(self, text="Create Account!", command=self.attempt_create_account)
         self.create_account_button.pack()
+
+        self.go_back = ttk.Button(self, text="Go Back", command=self.return_to_wel)
+        self.go_back.pack()
+
+    def return_to_wel(self):
+        self.parent.switch_to("welcome patient")
     
     def attempt_create_account(self):
-        # TODO merge with the the existing create account code from handle accounts
-        self.parent.switch_to("patient profile")
+        inputs = {key: entry.get() for key, entry in self.entries.items()}
+        compare_functions = [str_ver.valid_name, str_ver.valid_password, str_ver.valid_phone_num,
+                              str_ver.valid_email, str_ver.valid_birthday, str_ver.valid_sex, str_ver.valid_insurance]
+        all_valid = [fun(inputs[name]) for fun, name in zip(compare_functions, self.labels)]
+        if False not in all_valid:
+            self.parent.account.create_account(inputs["Name"], inputs["Password"], inputs["Phone Number"], 
+                                               inputs["Email"], inputs["Birthday"], inputs["Sex"], inputs["Insurance Provider"])
+            self.parent.switch_to("patient profile")
 
 
 class PatientPofileNavBar(ttk.Frame):
@@ -519,7 +553,7 @@ class PatientPofileNavBar(ttk.Frame):
 
 
 class PatientProfile(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent: MainWindow):
         super().__init__()
         self.parent = parent
 
@@ -537,10 +571,18 @@ class PatientProfile(ttk.Frame):
         self.logout_button = ttk.Button(self, text="Logout", command=self.logout)
         self.logout_button.pack(anchor="e")
 
+    def update_frame(self):
+        patient_info = self.parent.account.account
+        label_names = ["name", "phone", "email", "birthday", "sex", "insurance provider"]
+        for label, label_name in zip(self.labels, label_names):
+            label.config(text=patient_info[label_name])
+
+
     def edit_profile(self):
         self.parent.switch_to("edit patient profile")
     
     def logout(self):
+        self.parent.account = None
         self.parent.switch_to("welcome")
 
 
@@ -567,11 +609,25 @@ class EditPatientProfile(ttk.Frame):
 
         self.logout_button = ttk.Button(self, text="DELETE ACCOUNT", command=self.die)
         self.logout_button.pack(anchor="e")
+    
+    def update_frame(self):
+        patient_info = self.parent.account.account
+        label_names = ["name","password", "phone", "email", "birthday", "sex", "insurance provider"]
+        for label, label_name in zip(self.widgets, label_names):
+            label[0].config(text="Current " + label_name.capitalize() + ": " + patient_info[label_name])
 
     def save_profile(self):
-        self.parent.switch_to("patient profile")
+        user_input = [entry.get() for label, entry in self.widgets]
+        validate_functions = [str_ver.valid_name, str_ver.valid_password, str_ver.valid_phone_num,
+                              str_ver.valid_email, str_ver.valid_birthday, str_ver.valid_sex, str_ver.valid_insurance]
+        valid_inputs = [fun(in_str) or in_str == "" for fun, in_str in zip(validate_functions, user_input)]
+        if False not in valid_inputs:
+            self.parent.account.update_account(name=user_input[0], password=user_input[1], phone_number=user_input[2],
+                                            email=user_input[3], birthday=user_input[4], sex=user_input[5], insur_prov=user_input[6])
+            self.parent.switch_to("patient profile")
     
     def die(self):
+        print("DELETE ACCOUNT")
         self.parent.switch_to("welcome")
 
 
@@ -609,7 +665,7 @@ class PatientViewMeds(ttk.Frame):
         
 
 class PatientViewMedX(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent: MainWindow):
         super().__init__()
         self.parent = parent
 
@@ -620,6 +676,47 @@ class PatientViewMedX(ttk.Frame):
                        tk.Label(self, text="<SEVERITY>"), tk.Label(self, text="<TIMES TO TAKE>")]
         for label in self.labels:
             label.pack(anchor="w")
+
+        edit_button = ttk.Button(self, text="Edit", command=self.edit_med)
+        edit_button.pack(anchor="s")
+
+        gen_rep_button = ttk.Button(self, text="Generate Report", command=self.gen_report)
+        gen_rep_button.pack(anchor="s")
+
+    def edit_med(self):
+        self.parent.switch_to("edit patient med x")
+    
+    def gen_report(self):
+        print("Not yet, lol")
+
+
+class PatientEditMedX(ttk.Frame):
+    def __init__(self, parent: MainWindow):
+        super().__init__()
+        self.parent = parent
+
+        self.title = tk.Label(self, text="PatientViewMedX")
+        self.title.pack()
+
+        self.widgets = [(ttk.Label(self, text="<NAME>"), ttk.Entry(self)),
+                        (ttk.Label(self, text="<CONDITIONS>"), ttk.Entry(self)),
+                        (ttk.Label(self, text="<SEVERITY>"), ttk.Entry(self)),
+                        (ttk.Label(self, text="<TIME 1>"), ttk.Entry(self)),
+                        (ttk.Label(self, text="<TIME 2>"), ttk.Entry(self)),
+                        (ttk.Label(self, text="<NAME 3>"), ttk.Entry(self))]
+
+        for label, entry in self.widgets:
+            label.pack(anchor="w")
+            entry.pack(anchor="w")
+        
+        save_button = ttk.Button(self, text="Save", command=lambda:self.finish_edit(True))
+        save_button.pack(anchor="e")
+
+        cancel_button = ttk.Button(self, text="Cancel", command=lambda:self.finish_edit(False))
+        cancel_button.pack(anchor="e")
+    
+    def finish_edit(self, save: bool):
+        self.parent.switch_to("view patient med x")
 
 
 if __name__ == "__main__":
