@@ -45,6 +45,9 @@ class MainWindow(tk.Tk):
         self.account: acc.DoctorAccount|acc.PatientAccount = None
         # stores the patient object for a patient's medications
         self.patient_n = None
+        # a free variable that can be used to send anything from one frame to another
+        # USE SPARINGLY!!!!!!!!
+        self.broadcast = None
     
     def switch_to(self, target: str):
         """Switches the current frame in the window to the target frame"""
@@ -303,18 +306,40 @@ class DoctorPatientList(ttk.Frame):
         self.list_frame = ttk.Frame(self.list_container)
         self.list_container.create_window((0, 0), window=self.list_frame, anchor="nw")
 
-        for i in range(50):
-            patient_frame = ttk.Frame(self.list_frame)
-            patient_frame.pack(fill="x")
-            for j in range(3):
-                button = ttk.Button(patient_frame, text=f"Button {i}", command=self.edit_patient)
-                button.pack(side="left")
         self.add_button = ttk.Button(self, text="Add Patient", command=self.edit_patient)
-        self.add_button.pack()
+        self.add_button.pack(side="top")
+
+        self.patient_frames = []
     
-    def edit_patient(self):
-        print(self.parent.account.full_patient_data())
+    def update_frame(self):
+        # load patient data
+        all_patient_records = self.parent.account.full_patient_data()
+        # remove any frames that already exist
+        for frame in self.patient_frames:
+            frame.pack_forget()
+        self.patient_frames = []
+        # repack the list frame
+        for id, patient in all_patient_records.items():
+            self.patient_frames.append(ttk.Frame(self.list_frame))
+            self.patient_frames[-1].pack(fill="x")
+
+            patient_name = ttk.Label(self.patient_frames[-1], text=patient["name"])
+            patient_name.pack(side="left")
+            
+            edit_button = ttk.Button(self.patient_frames[-1], text="Edit", command=lambda : self.edit_patient(id))
+            edit_button.pack(side="left")
+
+            delete_button = ttk.Button(self.patient_frames[-1], text="Delete", command=lambda : self.remove_patient(id))
+            delete_button.pack(side="left")
+        
+    def edit_patient(self, id: int):
+        self.parent.broadcast = id
+        print(id)
         self.parent.switch_to("edit patient on list")
+    
+    def remove_patient(self, id: int):
+        print("LOSER")
+        print(id)
 
 
 class DoctorPatientN(ttk.Frame):
