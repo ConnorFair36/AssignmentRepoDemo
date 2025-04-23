@@ -25,6 +25,9 @@ class patient():
     
     def removeMedicaiton(self, name = ""):
         self.medsManager.removeMedication(name)
+
+    def getMedsList(self):
+        return self.medsManager.medsArray
     
     def reminderCheck(self):
         self.medsManager.reminderCheck()
