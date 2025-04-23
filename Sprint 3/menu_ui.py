@@ -323,27 +323,29 @@ class ViewMeds(ttk.Frame):
     
     def update_frame(self):
         # load medication data
-         all_meds = self.parent.med_manager.getMedsList()
+         self.all_meds = self.parent.med_manager.getMedsList()
          # remove any frames that already exist
          for frame in self.med_frames:
              frame.pack_forget()
          self.med_frames = []
          # repack the list frame
-         for med in all_meds:
+         for med in self.all_meds:
              self.med_frames.append(ttk.Frame(self.list_frame))
              self.med_frames[-1].pack(fill="x")
  
              med_name = ttk.Label(self.med_frames[-1], text=med["name"])
              med_name.pack(side="left")
              
-             edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda : self.view_med(med))
+             edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda m=med: self.view_med(m))
              edit_button.pack(side="left")
+             
  
     def view_med(self, medication: dict):
         self.parent.broadcast = medication
         self.parent.switch_to("view med x")
     
     def add_med(self):
+        self.parent.broadcast = dict()
         self.parent.switch_to("edit med x")
         
 
@@ -371,6 +373,7 @@ class ViewMedX(ttk.Frame):
         if self.parent.broadcast == None:
             print("No medication input was given")
             self.parent.switch_to("view meds")
+            return
         # get the message and DELETE it from the broadcast to stop something else from getting it
         self.med_x = self.parent.broadcast
         self.parent.broadcast = None
@@ -392,6 +395,7 @@ class ViewMedX(ttk.Frame):
         self.labels[3].config(text=final_str)
 
     def edit_med(self):
+        self.parent.broadcast = self.med_x
         self.parent.switch_to("edit med x")
     
     def gen_report(self):
@@ -406,12 +410,12 @@ class EditMedX(ttk.Frame):
         self.title = tk.Label(self, text="ViewMedX")
         self.title.pack()
 
-        self.widgets = [(ttk.Label(self, text="<NAME>"), ttk.Entry(self)),
-                        (ttk.Label(self, text="<CONDITIONS>"), ttk.Entry(self)),
-                        (ttk.Label(self, text="<SEVERITY>"), ttk.Entry(self)),
-                        (ttk.Label(self, text="<TIME 1>"), ttk.Entry(self)),
-                        (ttk.Label(self, text="<TIME 2>"), ttk.Entry(self)),
-                        (ttk.Label(self, text="<NAME 3>"), ttk.Entry(self))]
+        self.widgets = [(ttk.Label(self, text="Name:"), ttk.Entry(self)),
+                        (ttk.Label(self, text="Conditions:"), ttk.Entry(self)),
+                        (ttk.Label(self, text="Severity:"), ttk.Entry(self)),
+                        (ttk.Label(self, text="Time 1:"), ttk.Entry(self)),
+                        (ttk.Label(self, text="Time 2:"), ttk.Entry(self)),
+                        (ttk.Label(self, text="Time 3:"), ttk.Entry(self))]
 
         for label, entry in self.widgets:
             label.pack(anchor="w")
@@ -423,8 +427,68 @@ class EditMedX(ttk.Frame):
         cancel_button = ttk.Button(self, text="Cancel", command=lambda:self.finish_edit(False))
         cancel_button.pack(anchor="e")
     
+    def update_frame(self):
+        # recive message and delete it
+        if self.parent.broadcast == None:
+            print("No medication input was given")
+            self.parent.switch_to("view meds")
+        self.med_x = self.parent.broadcast
+        self.parent.broadcast = None
+        # clear any items left over in the entries from other edits
+        for label, entry in self.widgets:
+            entry.delete(0, tk.END)
+        # if the med_x is being edited, update the labels
+        if self.med_x:
+            # converting the times into strings
+            times_as_str = [[self.med_x["time1"]["hours"], self.med_x["time1"]["minutes"]],
+                            [self.med_x["time2"]["hours"], self.med_x["time2"]["minutes"]],
+                            [self.med_x["time3"]["hours"], self.med_x["time3"]["minutes"]]]
+            # filtering out any times that don't exist
+            times_as_str = [time for time in times_as_str if time[0] != -1 or time[1] != -1]
+            # joining the times as HH:MM
+            times_as_str = [":".join(map(str, time)) for time in times_as_str]
+            # updating all of the entries to have the current values
+            self.widgets[0][1].insert(0, self.med_x["name"])
+            self.widgets[1][1].insert(0, self.med_x["conditions"])
+            self.widgets[2][1].insert(0, self.med_x["severity"])
+            for time, index in zip(times_as_str, range(1,len(times_as_str)+1)):
+                self.widgets[2 + index][1].insert(0, time)
+
     def finish_edit(self, save: bool):
-        self.parent.switch_to("view med x")
+        if save:
+            all_inputs = [widget[1].get() for widget in self.widgets]
+            all_filtered_inputs = all_inputs[:3] + [time for time in all_inputs[3:] if time != ""]
+            validate_functs = [str_ver.valid_conditions, str_ver.valid_conditions, str_ver.valid_severity, str_ver.valid_time, str_ver.valid_time, str_ver.valid_time]
+            valid_inputs = [fun(user_in) for fun, user_in in zip(validate_functs, all_filtered_inputs)]
+            if False in valid_inputs or len(valid_inputs) < 3:
+                print("Invalid input? ", False in valid_inputs)
+                print("No time given? ", len(valid_inputs) < 3)
+                return
+            # convert the times into the correct format for the med_manager
+            final_inputs = all_filtered_inputs[:2] + [int(all_filtered_inputs[2])] + [list(map(int, time.split(":"))) for time in all_filtered_inputs[3:]]
+            # remove the existing medication if we are editing
+            if self.med_x:
+                self.parent.med_manager.removeMedicaiton(self.med_x["name"])
+            # add medication
+            if len(final_inputs) == 4:
+                self.parent.med_manager.addMedication(name=final_inputs[0], conditions=final_inputs[1], severity=final_inputs[2], time1=final_inputs[3])
+            elif len(final_inputs) == 5:
+                self.parent.med_manager.addMedication(name=final_inputs[0], conditions=final_inputs[1], severity=final_inputs[2], time1=final_inputs[3], time2=final_inputs[4])
+            elif len(final_inputs) == 6:
+                self.parent.med_manager.addMedication(name=final_inputs[0], conditions=final_inputs[1], severity=final_inputs[2], time1=final_inputs[3], time2=final_inputs[4], time3=final_inputs[5])
+            # rebuild the dict to broadcast to the view med x
+            new_med = self.parent.med_manager.findMed(final_inputs[0])
+            self.parent.broadcast = new_med
+            self.parent.switch_to("view med x")
+        else:
+            # if the changes are being canceled, broadcast the original medication info or nothing
+            if self.med_x:
+                self.parent.broadcast = self.med_x
+                self.parent.switch_to("view med x")
+            else:
+                self.parent.switch_to("view meds")
+
+        
 
 
 if __name__ == "__main__":

@@ -29,6 +29,15 @@ class patient():
     def getMedsList(self):
         return self.medsManager.medsArray
     
+    def findMed(self, name: str) -> dict:
+        all_meds = self.getMedsList()
+        all_names = [med["name"] for med in all_meds]
+        try:
+            index = all_names.index(name)
+            return all_meds[index]
+        except ValueError:
+            return {}
+    
     def reminderCheck(self):
         self.medsManager.reminderCheck()
 
