@@ -1,0 +1,36 @@
+[
+    {
+        "name": "Stupid Pills",
+        "conditions": "Go to Jupiter to get more stupider",
+        "severity": 3,
+        "time1": {
+            "hours": 1,
+            "minutes": 0
+        },
+        "time2": {
+            "hours": 5,
+            "minutes": 30
+        },
+        "time3": {
+            "hours": 20,
+            "minutes": 0
+        }
+    },
+    {
+        "name": "Final Straw",
+        "conditions": "Too many",
+        "severity": 5,
+        "time1": {
+            "hours": 5,
+            "minutes": 30
+        },
+        "time2": {
+            "hours": -1,
+            "minutes": -1
+        },
+        "time3": {
+            "hours": -1,
+            "minutes": -1
+        }
+    }
+]

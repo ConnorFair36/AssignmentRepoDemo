@@ -20,10 +20,6 @@ def valid_email(email: str) -> bool:
     """Ensures the email is in the form: alphanum@alphanum.alphanum"""
     return bool(re.match("\w+@\w+\.\w+", email))
 
-def valid_institution_name(inst_name: str) -> bool:
-    """Ensures the institution name contains only alphanumeric characters"""
-    return bool(re.match("\w+", inst_name))
-
 def valid_conditions(conditions: str) -> bool:
     """Ensures the coditions contain only alphanumeric characters"""
     return bool(re.match("\w+", conditions))
