@@ -358,7 +358,7 @@ class ViewMedX(ttk.Frame):
         super().__init__()
         self.parent = parent
 
-        self.title = tk.Label(self, text="ViewMedX")
+        self.title = tk.Label(self, text="View Med")
         self.title.pack()
 
         self.labels = [tk.Label(self, text="<NAME>"), tk.Label(self, text="<CONDITIONS>"), 
@@ -387,18 +387,15 @@ class ViewMedX(ttk.Frame):
         self.labels[0].config(text=self.med_x["name"])
         self.labels[1].config(text=self.med_x["conditions"])
         self.labels[2].config(text=self.med_x["severity"])
-        # converting the 3 times into one string
-        times_as_str = [[self.med_x["time1"]["hours"], self.med_x["time1"]["minutes"]],
-                        [self.med_x["time2"]["hours"], self.med_x["time2"]["minutes"]],
-                        [self.med_x["time3"]["hours"], self.med_x["time3"]["minutes"]]]
-        # filtering out any times that don't exist
-        times_as_str = [time for time in times_as_str if time[0] != -1 or time[1] != -1]
-        # joining the times as HH:MM
-        times_as_str = [":".join(map(str, time)) for time in times_as_str]
+        # saves times as dicts in array
+        times_as_str = [self.med_x['time1'], self.med_x['time2'], self.med_x['time3']]
         final_str = ""
         for time, i in zip(times_as_str, range(1,len(times_as_str)+1)):
-            final_str = final_str + f"Time {i}: " + time + "\n"
-        final_str = "Times to Take At: \n" + final_str[:-2]
+            # filtering out any times that don't exist
+            if(time['hours'] != -1 and time['minutes'] != -1):
+                # formatting times
+                final_str = final_str + f"Time {i}: {time['hours']}:{time['minutes']:02}\n"
+        final_str = "Times to Take At: \n" + final_str#[:-2]
         self.labels[3].config(text=final_str)
 
     def edit_med(self):
@@ -450,20 +447,16 @@ class EditMedX(ttk.Frame):
             entry.delete(0, tk.END)
         # if the med_x is being edited, update the labels
         if self.med_x:
-            # converting the times into strings
-            times_as_str = [[self.med_x["time1"]["hours"], self.med_x["time1"]["minutes"]],
-                            [self.med_x["time2"]["hours"], self.med_x["time2"]["minutes"]],
-                            [self.med_x["time3"]["hours"], self.med_x["time3"]["minutes"]]]
-            # filtering out any times that don't exist
-            times_as_str = [time for time in times_as_str if time[0] != -1 or time[1] != -1]
-            # joining the times as HH:MM
-            times_as_str = [":".join(map(str, time)) for time in times_as_str]
-            # updating all of the entries to have the current values
+            # saves times as dicts in array
+            times_as_str = [self.med_x['time1'], self.med_x['time2'], self.med_x['time3']]
             self.widgets[0][1].insert(0, self.med_x["name"])
             self.widgets[1][1].insert(0, self.med_x["conditions"])
             self.widgets[2][1].insert(0, self.med_x["severity"])
             for time, index in zip(times_as_str, range(1,len(times_as_str)+1)):
-                self.widgets[2 + index][1].insert(0, time)
+                # filtering out any times that don't exist
+                if(time['hours'] != -1 and time['minutes'] != -1):
+                    # formatting and displaying times
+                    self.widgets[2 + index][1].insert(0, f"{time['hours']}:{time['minutes']:02}")
 
     def finish_edit(self, save: bool):
         if save:
