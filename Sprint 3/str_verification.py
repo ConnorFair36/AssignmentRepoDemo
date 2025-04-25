@@ -30,7 +30,7 @@ def valid_severity(severity: str) -> bool:
 
 def valid_time(time: str) -> bool:
     """Ensures the time is in the form 0≤hour≤23:0≤min≤59 """
-    if bool(re.match("[0-9]{1,2}:[0-9]{1,2}", time)):
+    if bool(re.match("[0-9]{1,2}:[0-9]{2}", time)):
         hour, minute = time.split(":")
         return 3 <= len(time) <= 5 and 0 <= int(hour) <= 23 and 0 <= int(minute) <= 59
     return False

@@ -302,14 +302,11 @@ class ViewMeds(ttk.Frame):
         super().__init__()
         self.parent = parent
 
-        self.title = tk.Label(self, text="ViewMeds")
-        self.title.pack()
+        self.title = tk.Label(self, text="View Meds")
 
         self.list_container = tk.Canvas(self)
-        self.list_container.pack(side="left", fill="both")
 
         self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.list_container.yview)
-        self.scrollbar.pack(side="right", fill="y")
 
         self.list_container.configure(yscrollcommand=self.scrollbar.set)
         self.list_container.bind('<Configure>', 
@@ -319,27 +316,32 @@ class ViewMeds(ttk.Frame):
         self.list_container.create_window((0, 0), window=self.list_frame, anchor="nw")
 
         add_button = ttk.Button(self, text="Add Medication", command=self.add_med)
-        add_button.pack(anchor="s")
+
+        self.title.pack()
+        add_button.pack()
+        self.list_container.pack(side="left", fill="both")
+        self.scrollbar.pack(side="right", fill="y")
+        
 
         self.med_frames = []
     
     def update_frame(self):
         # load medication data
-         self.all_meds = self.parent.med_manager.getMedsList()
-         # remove any frames that already exist
-         for frame in self.med_frames:
-             frame.pack_forget()
-         self.med_frames = []
-         # repack the list frame
-         for med in self.all_meds:
-             self.med_frames.append(ttk.Frame(self.list_frame))
-             self.med_frames[-1].pack(fill="x")
- 
-             med_name = ttk.Label(self.med_frames[-1], text=med["name"])
-             med_name.pack(side="left")
-             
-             edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda m=med: self.view_med(m))
-             edit_button.pack(side="left")
+        self.all_meds = self.parent.med_manager.getMedsList()
+        # remove any frames that already exist
+        for frame in self.med_frames:
+            frame.pack_forget()
+        self.med_frames = []
+        # repack the list frame
+        for med in self.all_meds:
+            self.med_frames.append(ttk.Frame(self.list_frame))
+            self.med_frames[-1].pack(fill="x")
+
+            med_name = ttk.Label(self.med_frames[-1], text=med["name"])
+            med_name.pack(side="left")
+            
+            edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda m=med: self.view_med(m))
+            edit_button.pack(side="left")
              
  
     def view_med(self, medication: dict):
