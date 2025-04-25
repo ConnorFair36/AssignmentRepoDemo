@@ -54,5 +54,6 @@ class popupmsg():
     def conditionsPopup(self):
         toplevel = tk.Toplevel()
         label = ttk.Label(toplevel, text=self.med["conditions"], font=LARGE_FONT, justify='center')
-        toplevel.call('wm', 'attributes', '.', '-topmost', '1')
+        #showing behind reminder popup
+        # toplevel.call('wm', 'attributes', '.', '-topmost', '1')
         label.pack(side="top", expand=False, padx=10, pady=10)

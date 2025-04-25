@@ -36,6 +36,9 @@ class MainWindow(tk.Tk):
         # a free variable that can be used to send anything from one frame to another
         # USE SPARINGLY!!!!!!!!
         self.broadcast = None
+
+        self.win_open = True
+        self.protocol("WM_DELETE_WINDOW", self.win_status)
     
     def switch_to(self, target: str):
         """Switches the current frame in the window to the target frame"""
@@ -69,6 +72,12 @@ class MainWindow(tk.Tk):
         birthday_list = list(map(int, user_info["birthday"].split("-")))
         self.med_manager = patient.patient(first_name, last_name, user_info["phone"], user_info["insurance provider"], birthday_list)
 
+    def current_account(self):
+        return self.med_manager
+
+    def win_status(self):
+        self.win_open = False
+        self.destroy()
 
 # Patient frames
 class Welcome(ttk.Frame):
@@ -552,5 +561,3 @@ class Report(ttk.Frame):
         
 
 
-if __name__ == "__main__":
-    MainWindow().mainloop()
