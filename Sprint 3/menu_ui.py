@@ -189,6 +189,8 @@ class CreateAcc(ttk.Frame):
                                                inputs["Email"], inputs["Birthday"], inputs["Sex"], inputs["Insurance Provider"])
             self.parent.create_acc()
             self.parent.switch_to("profile")
+        # else:
+        #     print(all_valid.index(False))
 
 
 class PofileNavBar(ttk.Frame):

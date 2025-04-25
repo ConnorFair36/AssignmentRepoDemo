@@ -45,7 +45,7 @@ def valid_birthday(birthday: str) -> bool:
 def valid_sex(sex: str) -> bool:
     """Ensures sex is either: M, F, male, female"""
     sex = sex.upper()
-    return sex in ["M", "F", "MALE", "FEMALE"]
+    return sex in ["M", "F", "MALE", "FEMALE", "m", "f", "male", "female"]
 
 def valid_insurance(insurance: str) -> bool:
     """Ensures the coditions contain only alphanumeric characters"""
