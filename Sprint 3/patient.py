@@ -1,4 +1,5 @@
 from meds import medsManager
+import os
 
 class patient():
     def __init__(self, first="", last="", phone="", insurance="", birthday=[00,00,0000]):
@@ -22,6 +23,13 @@ class patient():
     
     def clearMedsList(self):
         self.medsManager.clear()
+    
+    def deleteMedsFiles(self):
+        """Removes the medication list and reoprt file that was created for the patient. Use with care."""
+        if os.path.exists(self.medsManager.listFileName):
+            os.remove(self.medsManager.listFileName)
+        if os.path.exists(self.medsManager.reportFileName):
+            os.remove(self.medsManager.reportFileName)
     
     def removeMedicaiton(self, name = ""):
         self.medsManager.removeMedication(name)

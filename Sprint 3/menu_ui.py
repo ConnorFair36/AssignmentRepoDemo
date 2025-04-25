@@ -289,7 +289,9 @@ class EditProfile(ttk.Frame):
     
     def die(self):
         print("DELETE ACCOUNT")
-        # TODO delete the account and associated medication list
+        # deletes the account, medication list and report for this user
+        self.parent.med_manager.deleteMedsFiles()
+        self.parent.account.delete_account()
         self.parent.account = None
         self.parent.med_manager = None
         self.parent.switch_to("welcome")
@@ -368,6 +370,9 @@ class ViewMedX(ttk.Frame):
         gen_rep_button = ttk.Button(self, text="Generate Report", command=self.gen_report)
         gen_rep_button.pack(anchor="s")
 
+        delete_button = ttk.Button(self, text="Delete Medication", command=self.delete_med)
+        delete_button.pack(anchor="s")
+
     def update_frame(self):
         # recive message and delete it
         if self.parent.broadcast == None:
@@ -400,6 +405,10 @@ class ViewMedX(ttk.Frame):
     
     def gen_report(self):
         print("Not yet, lol")
+
+    def delete_med(self):
+        self.parent.med_manager.removeMedicaiton(self.med_x["name"])
+        self.parent.switch_to("view meds")
 
 
 class EditMedX(ttk.Frame):
