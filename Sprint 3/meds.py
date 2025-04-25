@@ -128,9 +128,11 @@ class medsManager():
             time = f"{report['time'][3]}:{report['time'][4]:02} am"
         else:
             time = f"{report['time'][3]-12}:{report['time'][4]:02} pm"
-        print(f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}")
+        # print(f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}")
+        return f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}\n"
 
     def generateReport(self, medName: str = None, time1: time.struct_time = None, time2: time.struct_time = None):
+        reportString = ""
         try:
             with open(self.reportFileName, mode="r", encoding="utf-8") as f:
                 try:
@@ -138,15 +140,16 @@ class medsManager():
                     for report in tempArray:
                         if(medName != None):
                             if(report["name"] == medName):
-                                self.printReport(report)
+                                reportString = reportString + self.printReport(report)
                         else:
-                            self.printReport(report)
+                            reportString = reportString + self.printReport(report)
                 except json.decoder.JSONDecodeError:
                     pass
         except FileNotFoundError:
             print(f"File '{self.reportFileName}' not found! Aborting")
             exit(1)
         f.close()
+        return reportString
     
     def clearReport(self):
         try:

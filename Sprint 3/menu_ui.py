@@ -19,6 +19,7 @@ class MainWindow(tk.Tk):
             "view meds": ViewMeds(parent=self),
             "view med x": ViewMedX(parent=self),
             "edit med x": EditMedX(parent=self),
+            "report": Report(parent=self),
             # utility frames
             "NavBar": PofileNavBar(parent=self)
         }
@@ -54,7 +55,7 @@ class MainWindow(tk.Tk):
             self.current.update_frame()
         # adds the navbar to the frames that need it
         if self.window_state in ["profile", "edit profile", "view meds", "view med x",
-                                   "edit med x"]:
+                                   "edit med x", "report"]:
             self.utilites.append(self.frames["NavBar"])
             self.utilites[-1].pack(side="bottom")
         self.update_idletasks()
@@ -206,12 +207,18 @@ class PofileNavBar(ttk.Frame):
 
         self.to_pat_list = ttk.Button(self, text="Medications", command=self.view_meds)
         self.to_pat_list.pack(side="left")
+
+        self.to_report_button = ttk.Button(self, text="Report", command=self.report_window)
+        self.to_report_button.pack()
     
     def go_to_profile(self):
         self.parent.switch_to("profile")
     
     def view_meds(self):
         self.parent.switch_to("view meds")
+
+    def report_window(self):
+        self.parent.switch_to("report")
 
 
 class Profile(ttk.Frame):
@@ -371,8 +378,8 @@ class ViewMedX(ttk.Frame):
         edit_button = ttk.Button(self, text="Edit", command=self.edit_med)
         edit_button.pack(anchor="s")
 
-        gen_rep_button = ttk.Button(self, text="Generate Report", command=self.gen_report)
-        gen_rep_button.pack(anchor="s")
+        # gen_rep_button = ttk.Button(self, text="Generate Report", command=self.gen_report)
+        # gen_rep_button.pack(anchor="s")
 
         delete_button = ttk.Button(self, text="Delete Medication", command=self.delete_med)
         delete_button.pack(anchor="s")
@@ -404,8 +411,8 @@ class ViewMedX(ttk.Frame):
         self.parent.broadcast = self.med_x
         self.parent.switch_to("edit med x")
     
-    def gen_report(self):
-        print("Not yet, lol")
+    # def gen_report(self):
+    #     print("Not yet, lol")
 
     def delete_med(self):
         self.parent.med_manager.removeMedicaiton(self.med_x["name"])
@@ -494,6 +501,51 @@ class EditMedX(ttk.Frame):
             else:
                 self.parent.switch_to("view meds")
 
+class Report(ttk.Frame):
+    def __init__(self, parent: MainWindow):
+        super().__init__()
+        self.parent = parent
+
+        self.title = tk.Label(self, text="Medication Report")
+
+        self.list_container = tk.Canvas(self)
+
+        self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.list_container.yview)
+
+        self.list_container.configure(yscrollcommand=self.scrollbar.set)
+        self.list_container.bind('<Configure>', 
+                lambda e: self.list_container.configure(scrollregion=self.list_container.bbox("all")))
+
+        self.list_frame = ttk.Frame(self.list_container)
+        self.list_container.create_window((0, 0), window=self.list_frame, anchor="nw")
+
+
+        self.title.pack()
+        self.list_container.pack(side="left", fill="both")
+        self.scrollbar.pack(side="right", fill="y")
+        
+
+        self.med_frames = []
+    
+    def update_frame(self):
+        # load medication data
+        report = self.parent.med_manager.generateReport()
+        # remove any frames that already exist
+        for frame in self.med_frames:
+            frame.pack_forget()
+        self.med_frames = []
+        # self.med_frames.append(ttk.Frame(report))
+        # repack the list frame
+        # for med in self.all_meds:
+            # self.med_frames.append(ttk.Frame(self.list_frame))
+        #     self.med_frames[-1].pack(fill="x")
+
+        #     med_name = ttk.Label(self.med_frames[-1], text=med["name"])
+        #     med_name.pack(side="left")
+            
+        #     edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda m=med: self.view_med(m))
+        #     edit_button.pack(side="left")
+             
         
 
 
