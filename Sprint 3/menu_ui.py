@@ -528,13 +528,16 @@ class Report(ttk.Frame):
         self.med_frames = []
     
     def update_frame(self):
-        # load medication data
         report = self.parent.med_manager.generateReport()
         # remove any frames that already exist
         for frame in self.med_frames:
             frame.pack_forget()
+
         self.med_frames = []
-        # self.med_frames.append(ttk.Frame(report))
+        self.med_frames.append(ttk.Frame(self.list_frame))
+        self.med_frames[-1].pack(fill="x")
+        reportFrame = ttk.Label(self.med_frames[-1], text=report)
+        reportFrame.pack(side="left")
         # repack the list frame
         # for med in self.all_meds:
             # self.med_frames.append(ttk.Frame(self.list_frame))
