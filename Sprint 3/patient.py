@@ -1,5 +1,6 @@
 from meds import medsManager
 import os
+import time
 
 class patient():
     def __init__(self, first="", last="", phone="", insurance="", birthday=[00,00,0000]):
@@ -49,8 +50,8 @@ class patient():
     def reminderCheck(self):
         self.medsManager.reminderCheck()
 
-    def generateReport(self):
-        self.medsManager.generateReport()
+    def generateReport(self, medName: str = None, time1: time.struct_time = None, time2: time.struct_time = None):
+        self.medsManager.generateReport(medName, time1, time2)
     
     def clearReport(self):
         self.medsManager.clearReport()
