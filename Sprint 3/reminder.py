@@ -4,6 +4,7 @@ import window
 class reminder():
     def __init__(self):
         self.reminderSent = False
+    
     def check(self, med = {
                         "name" : "",
                         "conditions" : "None",
@@ -40,4 +41,3 @@ class reminder():
             self.reminderSent = True
         elif(time.localtime()[4] > minute):
             self.reminderSent = False
-        #add code to log a confirmation

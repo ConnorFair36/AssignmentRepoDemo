@@ -7,8 +7,6 @@ LARGE_FONT= ("Verdana", 12)
 NORM_FONT= ("Verdana", 10)
 SMALL_FONT= ("Verdana", 8)
 
-
-
 class popupmsg():
     def __init__(self, med = {"name":"ERROR: NO INPUT", "conditions":"ERROR: NO INPUT"}, fileName = None):
         self.med = med
