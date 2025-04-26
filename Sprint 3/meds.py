@@ -131,15 +131,16 @@ class medsManager():
         # print(f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}")
         return f"{report['name']} taken at " + time + f" on {report['time'][1]}-{report['time'][2]}-{report['time'][0]}\n"
 
-    def generateReport(self, medName: str = None, time1: time.struct_time = None, time2: time.struct_time = None):
+    def generateReport(self, search: str = None):
         reportString = ""
+        # print(search)
         try:
             with open(self.reportFileName, mode="r", encoding="utf-8") as f:
                 try:
                     tempArray = json.load(f)
                     for report in tempArray:
-                        if(medName != None):
-                            if(report["name"] == medName):
+                        if(search != ""):
+                            if(report["name"] == search):
                                 reportString = reportString + self.printReport(report)
                         else:
                             reportString = reportString + self.printReport(report)

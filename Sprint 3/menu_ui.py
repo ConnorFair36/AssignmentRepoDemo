@@ -141,10 +141,10 @@ class SignIn(ttk.Frame):
     def attempt_sign_in(self):
         name = self.name_in.get()
         password = self.password_in.get()
-        print(name, password)
+        # print(name, password)
         if str_ver.valid_name(name) and str_ver.valid_password(password):
             if self.parent.account.find_account(name, password):
-                print(self.parent.account.account["name"])
+                # print(self.parent.account.account["name"])
                 self.parent.create_acc()
                 self.parent.switch_to("profile")
             else:
@@ -528,8 +528,15 @@ class Report(ttk.Frame):
         self.list_frame = ttk.Frame(self.list_container)
         self.list_container.create_window((0, 0), window=self.list_frame, anchor="nw")
 
+        self.searchTerm = tk.StringVar()
+        self.searchEntry = ttk.Entry(self, textvariable=self.searchTerm)
+        self.searchButton = ttk.Button(self, text="Search", command=self.update_frame)
+
+        
 
         self.title.pack()
+        self.searchEntry.pack()
+        self.searchButton.pack()
         self.list_container.pack(side="left", fill="both")
         self.scrollbar.pack(side="right", fill="y")
         
@@ -537,7 +544,7 @@ class Report(ttk.Frame):
         self.med_frames = []
     
     def update_frame(self):
-        report = self.parent.med_manager.generateReport()
+        report = self.parent.med_manager.generateReport(self.searchTerm.get())
         # remove any frames that already exist
         for frame in self.med_frames:
             frame.pack_forget()
@@ -547,16 +554,6 @@ class Report(ttk.Frame):
         self.med_frames[-1].pack(fill="x")
         reportFrame = ttk.Label(self.med_frames[-1], text=report)
         reportFrame.pack(side="left")
-        # repack the list frame
-        # for med in self.all_meds:
-            # self.med_frames.append(ttk.Frame(self.list_frame))
-        #     self.med_frames[-1].pack(fill="x")
-
-        #     med_name = ttk.Label(self.med_frames[-1], text=med["name"])
-        #     med_name.pack(side="left")
-            
-        #     edit_button = ttk.Button(self.med_frames[-1], text="View", command=lambda m=med: self.view_med(m))
-        #     edit_button.pack(side="left")
              
         
 

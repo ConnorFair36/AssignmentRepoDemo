@@ -50,8 +50,8 @@ class patient():
     def reminderCheck(self):
         self.medsManager.reminderCheck()
 
-    def generateReport(self, medName: str = None, time1: time.struct_time = None, time2: time.struct_time = None):
-        return(self.medsManager.generateReport(medName, time1, time2))
+    def generateReport(self, search: str = None):
+        return(self.medsManager.generateReport(search))
     
     def clearReport(self):
         self.medsManager.clearReport()
