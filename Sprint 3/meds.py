@@ -140,7 +140,7 @@ class medsManager():
                     tempArray = json.load(f)
                     for report in tempArray:
                         if(search != ""):
-                            if(report["name"] == search):
+                            if(search.count("-") == 0 and report["name"] == search):
                                 reportString = reportString + self.printReport(report)
                         else:
                             reportString = reportString + self.printReport(report)
